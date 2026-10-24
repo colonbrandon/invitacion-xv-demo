@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datos para tu invitación</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --acento: #7b4f8e; --texto: #2b2230; --borde: rgb(43 34 48 / .14); --fondo: #fbf8f5; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--texto); background: var(--fondo); line-height: 1.5; }
+  main { max-width: 620px; margin: 0 auto; padding: 24px 16px 60px; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  fieldset { border: 1px solid var(--borde); border-radius: 14px; background: #fff; padding: 16px; margin: 18px 0 0; display: grid; gap: 12px; }
+  legend { font-weight: 700; padding: 0 6px; }
+  label { display: grid; gap: 6px; font-weight: 600; font-size: 14px; }
+  input, textarea, select { font: inherit; padding: 10px 12px; min-height: 44px; border-radius: 10px; border: 1.5px solid var(--borde); width: 100%; background: #fff; }
+  textarea { min-height: 90px; }
+  .nota { font-size: 13px; opacity: .75; margin: 0; }
+  button { font: inherit; font-weight: 700; min-height: 48px; width: 100%; margin-top: 18px; border-radius: 999px; border: 0; background: var(--acento); color: #fff; cursor: pointer; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid var(--texto); outline-offset: 2px; }
+  #estado { font-weight: 600; min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <p style="background:#2b2230;color:#fff;border-radius:10px;padding:10px 14px;font-size:14px;margin:0 0 16px"><strong>Demostración:</strong> este formulario no envía ni guarda ningún dato. Al tocar el botón solo ves, en esta misma pantalla, el mensaje que se armaría. Usá datos ficticios.</p>
+  <h1>Datos para tu invitación</h1>
+  <p class="nota">Completá lo que tengas. Si algo cambia, se puede actualizar sin costo hasta el día del evento.</p>
+  <form id="f" novalidate>
+    <fieldset>
+      <legend>Pedido</legend>
+      <label>Número de pedido<input name="Pedido" required placeholder="#1001"></label>
+      <label>Plan<select name="Plan"><option>Esencial</option><option selected>Pase</option><option>Pase + Acceso</option></select></label>
+    </fieldset>
+    <fieldset>
+      <legend>Evento</legend>
+      <label>Nombre de la quinceañera o quinceañero<input name="Nombre" required></label>
+      <label>Fecha y hora<input name="Fecha y hora" type="datetime-local" required></label>
+      <label>Salón o lugar<input name="Lugar" required></label>
+      <label>Dirección<input name="Dirección" required></label>
+      <label>Frase de bienvenida (opcional)<textarea name="Frase"></textarea></label>
+      <label>Dress code (opcional)<input name="Dress code"></label>
+      <label>Alias o CBU para regalos (opcional)<input name="Alias regalos"></label>
+      <label>Fecha límite para confirmar<input name="Límite RSVP" type="date"></label>
+    </fieldset>
+    <fieldset>
+      <legend>Estilo</legend>
+      <label>Colores o temática<input name="Estilo" placeholder="Ej.: lila y dorado, noche estrellada"></label>
+      <p class="nota">Las fotos y la canción se mandan después por WhatsApp. Solo se usan fotos y música con derecho a usarlas.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Invitados (planes Pase y Pase + Acceso)</legend>
+      <label>Lista: una línea por familia o persona, con el formato <code>Nombre;lugares</code><textarea name="Invitados" placeholder="Familia Gómez;4"></textarea></label>
+    </fieldset>
+    <button type="submit">Ver el mensaje que se enviaría</button>
+    <p id="estado" role="status" aria-live="polite"></p>
+    <pre id="vista" hidden style="white-space:pre-wrap;background:#fff;border:1px solid rgb(43 34 48 / .14);border-radius:12px;padding:14px;font-size:14px"></pre>
+  </form>
+</main>
+<script>
+  // Copia pública de demostración: no hay número de negocio, no se abre WhatsApp y no se guarda nada.
+  const f = document.getElementById('f');
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const est = document.getElementById('estado');
+    const vista = document.getElementById('vista');
+    const faltan = [...f.querySelectorAll('[required]')].filter((el) => !el.value.trim());
+    if (faltan.length) { vista.hidden = true; est.textContent = 'Faltan datos obligatorios: ' + faltan.map((el) => el.name).join(', '); faltan[0].focus(); return; }
+    const texto = [...new FormData(f).entries()].filter(([, v]) => String(v).trim()).map(([k, v]) => `${k}: ${v}`).join('\n');
+    vista.textContent = 'Datos para mi invitación\n' + texto;
+    vista.hidden = false;
+    est.textContent = 'Demostración: este es el mensaje que llegaría al negocio por WhatsApp. No se envió ni se guardó nada.';
+  });
+</script>
+</body>
+</html>
